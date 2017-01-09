@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Dapplo.Bitbucket", "Dapplo.Bitbucket\Dapplo.Bitbucket.xproj", "{637BAF19-5528-4672-8A44-0440B9840309}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Dapplo.Bitbucket.Tests", "Dapplo.Bitbucket.Tests\Dapplo.Bitbucket.Tests.xproj", "{551EA395-BF45-4B4A-8B31-BD507298C0F9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AnyCPU = Debug|AnyCPU
+		Release|AnyCPU = Release|AnyCPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{637BAF19-5528-4672-8A44-0440B9840309}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
+		{637BAF19-5528-4672-8A44-0440B9840309}.Debug|AnyCPU.Build.0 = Debug|Any CPU
+		{637BAF19-5528-4672-8A44-0440B9840309}.Release|AnyCPU.ActiveCfg = Release|Any CPU
+		{637BAF19-5528-4672-8A44-0440B9840309}.Release|AnyCPU.Build.0 = Release|Any CPU
+		{551EA395-BF45-4B4A-8B31-BD507298C0F9}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
+		{551EA395-BF45-4B4A-8B31-BD507298C0F9}.Debug|AnyCPU.Build.0 = Debug|Any CPU
+		{551EA395-BF45-4B4A-8B31-BD507298C0F9}.Release|AnyCPU.ActiveCfg = Release|Any CPU
+		{551EA395-BF45-4B4A-8B31-BD507298C0F9}.Release|AnyCPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
