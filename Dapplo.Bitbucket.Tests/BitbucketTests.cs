@@ -26,6 +26,8 @@
 #region Usings
 
 using System;
+using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
@@ -41,8 +43,6 @@ namespace Dapplo.Bitbucket.Tests
 	/// </summary>
 	public class BitbucketTests
 	{
-		private readonly string _username = Environment.GetEnvironmentVariable("bitbucket_test_username");
-		private readonly string _password = Environment.GetEnvironmentVariable("bitbucket_test_password");
 		public BitbucketTests(ITestOutputHelper testOutputHelper)
 		{
 			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
@@ -54,8 +54,12 @@ namespace Dapplo.Bitbucket.Tests
 			}
 		}
 
-		// Test against Bitbucket server
-		private static readonly Uri BitbucketTestUri = new Uri("https://bitbucket");
+		private readonly string _username = Environment.GetEnvironmentVariable("bitbucket_test_username");
+		private readonly string _password = Environment.GetEnvironmentVariable("bitbucket_test_password");
+
+		// Specify the URI for the Bitbucket server
+		// ReSharper disable once AssignNullToNotNullAttribute
+		private static readonly Uri BitbucketTestUri = new Uri(Environment.GetEnvironmentVariable("bitbucket_test_url"));
 
 
 		private readonly IBitbucketClient _bitbucketClient;
@@ -63,9 +67,24 @@ namespace Dapplo.Bitbucket.Tests
 		[Fact]
 		public async Task TestGetUser()
 		{
-			var user = await _bitbucketClient.User.GetUserAsync(_username);
+			var user = await _bitbucketClient.User.GetAsync(_username);
 			Assert.NotNull(user);
 		}
 
+		[Fact]
+		public async Task TestGetUserAvatar()
+		{
+			var avatar = await _bitbucketClient.User.GetAvatarAsync<Bitmap>(_username);
+			Assert.NotNull(avatar);
+			Assert.True(avatar.Width > 0);
+		}
+
+		[Fact]
+		public async Task TestGetProjects()
+		{
+			var projects = await _bitbucketClient.Repository.GetProjectsAsync();
+			Assert.NotNull(projects);
+			Assert.True(projects.Projects.Any());
+		}
 	}
 }

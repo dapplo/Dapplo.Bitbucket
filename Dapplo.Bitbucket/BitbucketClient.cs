@@ -70,8 +70,13 @@ namespace Dapplo.Bitbucket
 
 			_behaviour = ConfigureBehaviour(new HttpBehaviour(), httpSettings);
 			User = new UserApi(this);
-
+			Repository = new RepositoryApi(this);
 		}
+
+		/// <summary>
+		///     The IHttpBehaviour for this Confluence instance
+		/// </summary>
+		public IHttpBehaviour HttpBehaviour => _behaviour;
 
 		/// <summary>
 		///     Set Basic Authentication for the current client
@@ -83,11 +88,6 @@ namespace Dapplo.Bitbucket
 			_user = user;
 			_password = password;
 		}
-
-		/// <summary>
-		///     The IHttpBehaviour for this Confluence instance
-		/// </summary>
-		public IHttpBehaviour HttpBehaviour => _behaviour;
 
 		/// <summary>
 		///     This makes sure that the HttpBehavior is promoted for the following Http call.
@@ -106,6 +106,12 @@ namespace Dapplo.Bitbucket
 		///     The base URI for your Confluence server downloads
 		/// </summary>
 		public Uri BitbucketUri { get; }
+
+		/// <inheritdoc />
+		public IUserApi User { get; }
+
+		/// <inheritdoc />
+		public IRepositoryApi Repository { get; }
 
 		/// <summary>
 		///     Factory method to create a BitbucketClient
@@ -127,19 +133,16 @@ namespace Dapplo.Bitbucket
 		private IHttpBehaviour ConfigureBehaviour(IChangeableHttpBehaviour behaviour, IHttpSettings httpSettings = null)
 		{
 			behaviour.HttpSettings = httpSettings ?? HttpExtensionsGlobals.HttpSettings;
-			behaviour.OnHttpRequestMessageCreated = httpMessage =>
+			behaviour.OnHttpRequestMessageCreated = httpRequestMessage =>
 			{
-				httpMessage?.Headers.TryAddWithoutValidation("X-Atlassian-Token", "nocheck");
+				httpRequestMessage?.Headers.TryAddWithoutValidation("X-Atlassian-Token", "nocheck");
 				if (!string.IsNullOrEmpty(_user) && (_password != null))
 				{
-					httpMessage?.SetBasicAuthorization(_user, _password);
+					httpRequestMessage?.SetBasicAuthorization(_user, _password);
 				}
-				return httpMessage;
+				return httpRequestMessage;
 			};
 			return behaviour;
 		}
-
-		/// <inheritdoc />
-		public IUserApi User { get; }
 	}
 }

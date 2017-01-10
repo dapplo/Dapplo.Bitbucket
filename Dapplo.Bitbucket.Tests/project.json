@@ -1,4 +1,4 @@
-{
+﻿{
 	"version": "1.0.0-*",
 	"title": "Dapplo.Bitbucket.Tests",
 	"authors": ["Robin Krom"],
@@ -8,11 +8,11 @@
 	"dependencies": {
 		"Dapplo.Log": "1.0.22",
 		"Dapplo.Log.XUnit": "1.0.22",
-		"Dapplo.Utils": "1.0.128",
 		"Dapplo.Bitbucket": "*",
 		"xunit.runner.visualstudio": "2.1.0",
 		"Xunit.StaFact": "0.1.36-beta",
-		"ReportGenerator": "2.5.1"
+		"ReportGenerator": "2.5.1",
+		"Dapplo.Utils": "1.0.131"
 	},
 	"frameworks": {
 		"net45": {

@@ -26,7 +26,6 @@
 #region Usings
 
 using System;
-using Dapplo.Bitbucket.Entities;
 
 #endregion
 
@@ -37,8 +36,6 @@ namespace Dapplo.Bitbucket
 	/// </summary>
 	public interface IBitbucketClient
 	{
-		void PromoteContext();
-
 		/// <summary>
 		///     The base URI for your Bitbucket server api calls
 		/// </summary>
@@ -50,15 +47,22 @@ namespace Dapplo.Bitbucket
 		Uri BitbucketUri { get; }
 
 		/// <summary>
+		///     Methods in the user domain
+		/// </summary>
+		IUserApi User { get; }
+
+		/// <summary>
+		///     Methods in the repository domain
+		/// </summary>
+		IRepositoryApi Repository { get; }
+
+		void PromoteContext();
+
+		/// <summary>
 		///     Enables basic authentication for every request following this call
 		/// </summary>
 		/// <param name="user">string with the confluence user</param>
 		/// <param name="password">string with the password for the confluence user</param>
 		void SetBasicAuthentication(string user, string password);
-
-		/// <summary>
-		/// Methods in the user domain
-		/// </summary>
-		IUserApi User { get; }
 	}
 }
