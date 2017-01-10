@@ -22,6 +22,9 @@ namespace Dapplo.Bitbucket.Entities
 		[DataMember(Name = "start", EmitDefaultValue = false)]
 		public int Start { get; set; }
 
+		[DataMember(Name = "nextPageStart", EmitDefaultValue = false)]
+		public int NextPageStart { get; set; }
+
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();

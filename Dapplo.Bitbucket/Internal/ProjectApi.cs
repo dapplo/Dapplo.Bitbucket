@@ -26,6 +26,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.Bitbucket.Entities;
@@ -48,9 +49,40 @@ namespace Dapplo.Bitbucket.Internal
 		}
 
 
-		public async Task<Results<Project>> GetAllAsync(CancellationToken token = default(CancellationToken))
+		public async Task<Results<Project>> GetFirstAsync(int limit = 25, int start = 0, CancellationToken token = default(CancellationToken))
 		{
 			var projectsUri = _bitbucketClient.BitbucketApiUri.AppendSegments("projects");
+			if (start > 0)
+			{
+				projectsUri = projectsUri.ExtendQuery("start", start);
+
+			}
+			projectsUri = projectsUri.ExtendQuery("limit", limit);
+			_bitbucketClient.PromoteContext();
+			var response = await projectsUri.GetAsAsync<HttpResponse<Results<Project>, Error>>(token);
+			if (response.HasError)
+			{
+				throw new Exception(response.ErrorResponse.Message);
+			}
+
+			return response.Response;
+		}
+
+		public async Task<Results<Project>> GetNextAsync(Results<Project> previous, CancellationToken token = default(CancellationToken))
+		{
+			// Return empty object when the previous was the last
+			if (previous.IsLastPage)
+			{
+				return new Results<Project>()
+				{
+					IsLastPage = true,
+					Values = new List<Project>()
+				};
+			}
+
+			var projectsUri = _bitbucketClient.BitbucketApiUri.AppendSegments("projects");
+			projectsUri = projectsUri.ExtendQuery("start", previous.NextPageStart);
+			projectsUri = projectsUri.ExtendQuery("limit", previous.Limit);
 			_bitbucketClient.PromoteContext();
 			var response = await projectsUri.GetAsAsync<HttpResponse<Results<Project>, Error>>(token);
 			if (response.HasError)

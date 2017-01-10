@@ -38,11 +38,21 @@ namespace Dapplo.Bitbucket
 	/// </summary>
 	public interface IProjectApi
 	{
-		
 		/// <summary>
 		///     Retrieve all projects which the current user is allowed to see
 		/// </summary>
+		/// <param name="limit">Limit the amount of results</param>
+		/// <param name="start">The start page</param>
+		/// <param name="cancellationToken"></param>
 		/// <returns>Results with projects</returns>
-		Task<Results<Project>> GetAllAsync(CancellationToken token = default(CancellationToken));
+		Task<Results<Project>> GetFirstAsync(int limit = 25, int start = 0, CancellationToken cancellationToken = default(CancellationToken));
+
+		/// <summary>
+		///     Retrieve next projects
+		/// </summary>
+		/// <param name="results">Previous results</param>
+		/// <param name="cancellationToken"></param>
+		/// <returns>Results with projects</returns>
+		Task<Results<Project>> GetNextAsync(Results<Project> results, CancellationToken cancellationToken = default(CancellationToken));
 	}
 }

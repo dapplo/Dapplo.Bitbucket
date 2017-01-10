@@ -27,7 +27,6 @@
 
 using System;
 using System.Drawing;
-using System.Linq;
 using System.Threading.Tasks;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
@@ -82,9 +81,12 @@ namespace Dapplo.Bitbucket.Tests
 		[Fact]
 		public async Task TestGetProjects()
 		{
-			var projects = await _bitbucketClient.Project.GetAllAsync();
-			Assert.NotNull(projects);
-			Assert.True(projects.Any());
+			var projects = await _bitbucketClient.Project.GetFirstAsync();
+			do
+			{
+				Assert.NotNull(projects);
+				projects = await _bitbucketClient.Project.GetNextAsync(projects);
+			} while (!projects.IsLastPage);
 		}
 	}
 }
