@@ -25,29 +25,24 @@
 
 #region Usings
 
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+using Dapplo.Bitbucket.Entities;
 
 #endregion
 
-namespace Dapplo.Bitbucket.Entities
+namespace Dapplo.Bitbucket
 {
-	[DataContract]
-	public class ProjectList
+	/// <summary>
+	///     The interface to all project related functionality
+	/// </summary>
+	public interface IProjectApi
 	{
-		[DataMember(Name = "size", EmitDefaultValue = false)]
-		public int Size { get; set; }
-
-		[DataMember(Name = "limit", EmitDefaultValue = false)]
-		public int Limit { get; set; }
-
-		[DataMember(Name = "isLastPage", EmitDefaultValue = false)]
-		public bool IsLastPage { get; set; }
-
-		[DataMember(Name = "values", EmitDefaultValue = false)]
-		public IList<Project> Projects { get; set; }
-
-		[DataMember(Name = "start", EmitDefaultValue = false)]
-		public int Start { get; set; }
+		
+		/// <summary>
+		///     Retrieve all projects which the current user is allowed to see
+		/// </summary>
+		/// <returns>Results with projects</returns>
+		Task<Results<Project>> GetAllAsync(CancellationToken token = default(CancellationToken));
 	}
 }

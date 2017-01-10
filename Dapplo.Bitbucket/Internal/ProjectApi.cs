@@ -25,29 +25,40 @@
 
 #region Usings
 
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Dapplo.Bitbucket.Entities;
+using Dapplo.HttpExtensions;
 
 #endregion
 
-namespace Dapplo.Bitbucket.Entities
+namespace Dapplo.Bitbucket.Internal
 {
-	[DataContract]
-	public class RepositoryList
+	/// <summary>
+	///     Repository related methods
+	/// </summary>
+	internal class ProjectApi : IProjectApi
 	{
-		[DataMember(Name = "size", EmitDefaultValue = false)]
-		public int Size { get; set; }
+		private readonly IBitbucketClient _bitbucketClient;
 
-		[DataMember(Name = "limit", EmitDefaultValue = false)]
-		public int Limit { get; set; }
+		internal ProjectApi(IBitbucketClient bitbucketClient)
+		{
+			_bitbucketClient = bitbucketClient;
+		}
 
-		[DataMember(Name = "isLastPage", EmitDefaultValue = false)]
-		public bool IsLastPage { get; set; }
 
-		[DataMember(Name = "values", EmitDefaultValue = false)]
-		public IList<Repository> Repositories { get; set; }
+		public async Task<Results<Project>> GetAllAsync(CancellationToken token = default(CancellationToken))
+		{
+			var projectsUri = _bitbucketClient.BitbucketApiUri.AppendSegments("projects");
+			_bitbucketClient.PromoteContext();
+			var response = await projectsUri.GetAsAsync<HttpResponse<Results<Project>, Error>>(token);
+			if (response.HasError)
+			{
+				throw new Exception(response.ErrorResponse.Message);
+			}
 
-		[DataMember(Name = "start", EmitDefaultValue = false)]
-		public int Start { get; set; }
+			return response.Response;
+		}
 	}
 }

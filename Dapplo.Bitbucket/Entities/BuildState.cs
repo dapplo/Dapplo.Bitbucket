@@ -35,7 +35,7 @@ namespace Dapplo.Bitbucket.Entities
 	public class BuildState
 	{
 		[DataMember(Name = "state", EmitDefaultValue = false)]
-		public StashBuildState State { get; set; }
+		public BuildStates State { get; set; }
 
 		[DataMember(Name = "key", EmitDefaultValue = false)]
 		public string Key { get; set; }

@@ -68,28 +68,11 @@ namespace Dapplo.Bitbucket.Internal
 		/// <param name="repositorySlug"></param>
 		/// <param name="token"></param>
 		/// <returns>Branches</returns>
-		public async Task<BranchList> GetBranchesAsync(string projectKey, string repositorySlug, CancellationToken token = default(CancellationToken))
+		public async Task<Results<Branch>> GetBranchesAsync(string projectKey, string repositorySlug, CancellationToken token = default(CancellationToken))
 		{
 			var branchesUri = _bitbucketClient.BitbucketApiUri.AppendSegments("projects", projectKey, "repos", repositorySlug, "branches");
 			_bitbucketClient.PromoteContext();
-			var response = await branchesUri.GetAsAsync<HttpResponse<BranchList, Error>>(token);
-			if (response.HasError)
-			{
-				throw new Exception(response.ErrorResponse.Message);
-			}
-
-			return response.Response;
-		}
-
-		/// <summary>
-		///     Retrieve projects for the current user
-		/// </summary>
-		/// <returns>ProjectList</returns>
-		public async Task<ProjectList> GetProjectsAsync(CancellationToken token = default(CancellationToken))
-		{
-			var projectsUri = _bitbucketClient.BitbucketApiUri.AppendSegments("projects");
-			_bitbucketClient.PromoteContext();
-			var response = await projectsUri.GetAsAsync<HttpResponse<ProjectList, Error>>(token);
+			var response = await branchesUri.GetAsAsync<HttpResponse<Results<Branch>, Error>>(token);
 			if (response.HasError)
 			{
 				throw new Exception(response.ErrorResponse.Message);
@@ -101,12 +84,12 @@ namespace Dapplo.Bitbucket.Internal
 		/// <summary>
 		///     Retrieve repositories for project
 		/// </summary>
-		/// <returns>RepositoryList</returns>
-		public async Task<RepositoryList> GetRepositoriesAsync(string projectKey, CancellationToken token = default(CancellationToken))
+		/// <returns>Results with Repository objects</returns>
+		public async Task<Results<Repository>> GetRepositoriesAsync(string projectKey, CancellationToken token = default(CancellationToken))
 		{
 			var repositoriesUri = _bitbucketClient.BitbucketApiUri.AppendSegments("projects", projectKey, "repos");
 			_bitbucketClient.PromoteContext();
-			var response = await repositoriesUri.GetAsAsync<HttpResponse<RepositoryList, Error>>(token);
+			var response = await repositoriesUri.GetAsAsync<HttpResponse<Results<Repository>, Error>>(token);
 			if (response.HasError)
 			{
 				throw new Exception(response.ErrorResponse.Message);
@@ -136,11 +119,11 @@ namespace Dapplo.Bitbucket.Internal
 		///     Get build-status for commit
 		/// </summary>
 		/// <returns>BuildStates</returns>
-		public async Task<BuildStates> GetBuildStatus(string changeSetSha, CancellationToken token = default(CancellationToken))
+		public async Task<Results<BuildState>> GetBuildStatus(string changeSetSha, CancellationToken token = default(CancellationToken))
 		{
 			var commitUri = _bitbucketClient.BitbucketApiUri.AppendSegments("commits", changeSetSha);
 			_bitbucketClient.PromoteContext();
-			var response = await commitUri.GetAsAsync<HttpResponse<BuildStates, Error>>(token);
+			var response = await commitUri.GetAsAsync<HttpResponse<Results<BuildState>, Error>>(token);
 			if (response.HasError)
 			{
 				throw new Exception(response.ErrorResponse.Message);

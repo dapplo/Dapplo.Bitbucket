@@ -66,6 +66,7 @@ namespace Dapplo.Bitbucket.Internal
 			where TBitmap : class
 		{
 			_bitbucketClient.PromoteContext();
+			// This doesn't use the API itself!
 			var avatarUri = _bitbucketClient.BitbucketUri.AppendSegments("users", userslug, "avatar.png");
 			return await avatarUri.GetAsAsync<TBitmap>(cancellationToken).ConfigureAwait(false);
 		}

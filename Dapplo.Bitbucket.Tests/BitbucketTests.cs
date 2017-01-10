@@ -82,9 +82,9 @@ namespace Dapplo.Bitbucket.Tests
 		[Fact]
 		public async Task TestGetProjects()
 		{
-			var projects = await _bitbucketClient.Repository.GetProjectsAsync();
+			var projects = await _bitbucketClient.Project.GetAllAsync();
 			Assert.NotNull(projects);
-			Assert.True(projects.Projects.Any());
+			Assert.True(projects.Any());
 		}
 	}
 }

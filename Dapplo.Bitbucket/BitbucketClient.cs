@@ -71,6 +71,7 @@ namespace Dapplo.Bitbucket
 			_behaviour = ConfigureBehaviour(new HttpBehaviour(), httpSettings);
 			User = new UserApi(this);
 			Repository = new RepositoryApi(this);
+			Project = new ProjectApi(this);
 		}
 
 		/// <summary>
@@ -113,6 +114,9 @@ namespace Dapplo.Bitbucket
 		/// <inheritdoc />
 		public IRepositoryApi Repository { get; }
 
+		/// <inheritdoc />
+		public IProjectApi Project { get; }
+
 		/// <summary>
 		///     Factory method to create a BitbucketClient
 		/// </summary>
@@ -135,7 +139,7 @@ namespace Dapplo.Bitbucket
 			behaviour.HttpSettings = httpSettings ?? HttpExtensionsGlobals.HttpSettings;
 			behaviour.OnHttpRequestMessageCreated = httpRequestMessage =>
 			{
-				httpRequestMessage?.Headers.TryAddWithoutValidation("X-Atlassian-Token", "nocheck");
+				httpRequestMessage?.Headers.TryAddWithoutValidation("X-Atlassian-Token", "no-check");
 				if (!string.IsNullOrEmpty(_user) && (_password != null))
 				{
 					httpRequestMessage?.SetBasicAuthorization(_user, _password);

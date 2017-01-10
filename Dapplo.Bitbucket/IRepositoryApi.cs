@@ -55,20 +55,14 @@ namespace Dapplo.Bitbucket
 		/// <param name="projectKey"></param>
 		/// <param name="repositorySlug"></param>
 		/// <param name="token"></param>
-		/// <returns>Branches</returns>
-		Task<BranchList> GetBranchesAsync(string projectKey, string repositorySlug, CancellationToken token = default(CancellationToken));
-
-		/// <summary>
-		///     Retrieve projects for the current user
-		/// </summary>
-		/// <returns>ProjectList</returns>
-		Task<ProjectList> GetProjectsAsync(CancellationToken token = default(CancellationToken));
+		/// <returns>Results with Branch objects</returns>
+		Task<Results<Branch>> GetBranchesAsync(string projectKey, string repositorySlug, CancellationToken token = default(CancellationToken));
 
 		/// <summary>
 		///     Retrieve repositories for project
 		/// </summary>
-		/// <returns>RepositoryList</returns>
-		Task<RepositoryList> GetRepositoriesAsync(string projectKey, CancellationToken token = default(CancellationToken));
+		/// <returns>Results with Repository objects</returns>
+		Task<Results<Repository>> GetRepositoriesAsync(string projectKey, CancellationToken token = default(CancellationToken));
 
 		/// <summary>
 		///     Retrieve commit for project/respository and SHA1
@@ -79,8 +73,8 @@ namespace Dapplo.Bitbucket
 		/// <summary>
 		///     Get build-status for commit
 		/// </summary>
-		/// <returns>BuildStates</returns>
-		Task<BuildStates> GetBuildStatus(string changeSetSha, CancellationToken token = default(CancellationToken));
+		/// <returns>Results with BuildState objects</returns>
+		Task<Results<BuildState>> GetBuildStatus(string changeSetSha, CancellationToken token = default(CancellationToken));
 
 		/// <summary>
 		///     Set build-state for commit

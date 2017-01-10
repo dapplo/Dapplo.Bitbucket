@@ -52,6 +52,11 @@ namespace Dapplo.Bitbucket
 		IUserApi User { get; }
 
 		/// <summary>
+		///     Methods in the user domain
+		/// </summary>
+		IProjectApi Project { get; }
+
+		/// <summary>
 		///     Methods in the repository domain
 		/// </summary>
 		IRepositoryApi Repository { get; }
