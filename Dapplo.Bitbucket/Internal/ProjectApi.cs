@@ -66,7 +66,7 @@ namespace Dapplo.Bitbucket.Internal
 				projectsUri = projectsUri.ExtendQuery("limit", pagingInfo.Limit);
 			}
 			_bitbucketClient.PromoteContext();
-			var response = await projectsUri.GetAsAsync<HttpResponse<Results<Project>, Error>>(token);
+			var response = await projectsUri.GetAsAsync<HttpResponse<Results<Project>, Error>>(token).ConfigureAwait(false);
 			if (response.HasError)
 			{
 				throw new Exception(response.ErrorResponse.Message);

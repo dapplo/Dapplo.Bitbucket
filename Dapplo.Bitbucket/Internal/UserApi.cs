@@ -26,6 +26,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.Bitbucket.Entities;
@@ -92,7 +93,7 @@ namespace Dapplo.Bitbucket.Internal
 		/// <inheritdoc />
 		public async Task<TBitmap> GetAvatarAsync<TBitmap>(User user, int? size = null, CancellationToken cancellationToken = new CancellationToken()) where TBitmap : class
 		{
-			return await GetAvatarAsync<TBitmap>(user.Slug, size, cancellationToken);
+			return await GetAvatarAsync<TBitmap>(user.Slug, size, cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -100,13 +101,13 @@ namespace Dapplo.Bitbucket.Internal
 		{
 			_bitbucketClient.PromoteContext();
 			var avatarUri = _bitbucketClient.BitbucketUri.AppendSegments("users", userslug, "avatar.png");
-			await avatarUri.PostAsync(avatar, cancellationToken);
+			await avatarUri.PostAsync(avatar, cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
 		public async Task ChangeAvatarAsync<TBitmap>(User user, TBitmap avatar, CancellationToken cancellationToken = new CancellationToken()) where TBitmap : class
 		{
-			await ChangeAvatarAsync(user.Slug, avatar, cancellationToken);
+			await ChangeAvatarAsync(user.Slug, avatar, cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -114,13 +115,27 @@ namespace Dapplo.Bitbucket.Internal
 		{
 			_bitbucketClient.PromoteContext();
 			var avatarUri = _bitbucketClient.BitbucketUri.AppendSegments("users", userslug, "avatar.png");
-			await avatarUri.DeleteAsync(cancellationToken);
+			await avatarUri.DeleteAsync(cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
 		public async Task DeleteAvatarAsync(User user, CancellationToken cancellationToken = new CancellationToken())
 		{
-			await DeleteAvatarAsync(user.Slug, cancellationToken);
+			await DeleteAvatarAsync(user.Slug, cancellationToken).ConfigureAwait(false);
+		}
+
+		/// <inheritdoc />
+		public async Task<IDictionary<string, object>> GetSettingsAsync(string userSlug, CancellationToken cancellationToken = new CancellationToken())
+		{
+			_bitbucketClient.PromoteContext();
+			var settingsUri = _bitbucketClient.BitbucketUri.AppendSegments("users", userSlug, "settings");
+			return await settingsUri.GetAsAsync<IDictionary<string, object>>(cancellationToken).ConfigureAwait(false);
+		}
+
+		/// <inheritdoc />
+		public async Task<IDictionary<string, object>> GetSettingsAsync(User user, CancellationToken cancellationToken = new CancellationToken())
+		{
+			return await GetSettingsAsync(user.Slug, cancellationToken).ConfigureAwait(false);
 		}
 	}
 }

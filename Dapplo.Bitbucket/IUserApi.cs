@@ -25,6 +25,8 @@
 
 #region Usings
 
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.Bitbucket.Entities;
@@ -81,7 +83,6 @@ namespace Dapplo.Bitbucket
 		/// <param name="user">User</param>
 		/// <param name="avatar">the container with the avatar information</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns></returns>
 		Task ChangeAvatarAsync<TBitmap>(User user, TBitmap avatar, CancellationToken cancellationToken = new CancellationToken()) where TBitmap : class;
 
 		/// <summary>
@@ -91,7 +92,6 @@ namespace Dapplo.Bitbucket
 		/// <param name="userSlug">Slug from the User object</param>
 		/// <param name="avatar">the container with the avatar information</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns></returns>
 		Task ChangeAvatarAsync<TBitmap>(string userSlug, TBitmap avatar, CancellationToken cancellationToken = new CancellationToken()) where TBitmap : class;
 
 		/// <summary>
@@ -99,7 +99,6 @@ namespace Dapplo.Bitbucket
 		/// </summary>
 		/// <param name="userSlug">Slug from the User object</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns></returns>
 		Task DeleteAvatarAsync(string userSlug, CancellationToken cancellationToken = new CancellationToken());
 
 		/// <summary>
@@ -107,7 +106,22 @@ namespace Dapplo.Bitbucket
 		/// </summary>
 		/// <param name="user">User</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns></returns>
 		Task DeleteAvatarAsync(User user, CancellationToken cancellationToken = new CancellationToken());
+
+		/// <summary>
+		/// Retrieves the settings for the specified user
+		/// </summary>
+		/// <param name="userSlug">Slug from the User object</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns>IDictionary with name value pairs</returns>
+		Task<IDictionary<string, object>> GetSettingsAsync(string userSlug, CancellationToken cancellationToken = new CancellationToken());
+
+		/// <summary>
+		/// Retrieves the settings for the specified user
+		/// </summary>
+		/// <param name="user">User</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns>IDictionary with name value pairs</returns>
+		Task<IDictionary<string, object>> GetSettingsAsync(User user, CancellationToken cancellationToken = new CancellationToken());
 	}
 }

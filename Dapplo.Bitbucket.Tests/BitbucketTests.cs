@@ -73,6 +73,13 @@ namespace Dapplo.Bitbucket.Tests
 		}
 
 		[Fact]
+		public async Task TestGetUserSettings()
+		{
+			var user = await _bitbucketClient.User.GetSettingsAsync(_username);
+			Assert.NotNull(user);
+		}
+
+		[Fact]
 		public async Task TestGetUserAvatar()
 		{
 			var avatar = await _bitbucketClient.User.GetAvatarAsync<Bitmap>(_username);

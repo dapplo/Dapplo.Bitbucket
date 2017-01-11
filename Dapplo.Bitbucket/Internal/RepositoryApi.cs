@@ -89,7 +89,7 @@ namespace Dapplo.Bitbucket.Internal
 		{
 			var repositoriesUri = _bitbucketClient.BitbucketApiUri.AppendSegments("projects", projectKey, "repos");
 			_bitbucketClient.PromoteContext();
-			var response = await repositoriesUri.GetAsAsync<HttpResponse<Results<Repository>, Error>>(token);
+			var response = await repositoriesUri.GetAsAsync<HttpResponse<Results<Repository>, Error>>(token).ConfigureAwait(false);
 			if (response.HasError)
 			{
 				throw new Exception(response.ErrorResponse.Message);
@@ -106,7 +106,7 @@ namespace Dapplo.Bitbucket.Internal
 		{
 			var commitUri = _bitbucketClient.BitbucketApiUri.AppendSegments("projects", projectKey, "repos", repositorySlug, "commits", sha1);
 			_bitbucketClient.PromoteContext();
-			var response = await commitUri.GetAsAsync<HttpResponse<Commit, Error>>(token);
+			var response = await commitUri.GetAsAsync<HttpResponse<Commit, Error>>(token).ConfigureAwait(false);
 			if (response.HasError)
 			{
 				throw new Exception(response.ErrorResponse.Message);
@@ -123,7 +123,7 @@ namespace Dapplo.Bitbucket.Internal
 		{
 			var commitUri = _bitbucketClient.BitbucketApiUri.AppendSegments("commits", changeSetSha);
 			_bitbucketClient.PromoteContext();
-			var response = await commitUri.GetAsAsync<HttpResponse<Results<BuildState>, Error>>(token);
+			var response = await commitUri.GetAsAsync<HttpResponse<Results<BuildState>, Error>>(token).ConfigureAwait(false);
 			if (response.HasError)
 			{
 				throw new Exception(response.ErrorResponse.Message);
@@ -140,7 +140,7 @@ namespace Dapplo.Bitbucket.Internal
 		{
 			var commitUri = _bitbucketClient.BitbucketApiUri.AppendSegments("commits", changeSetSha);
 			_bitbucketClient.PromoteContext();
-			await commitUri.PostAsync(buildState, token);
+			await commitUri.PostAsync(buildState, token).ConfigureAwait(false);
 		}
 	}
 }
