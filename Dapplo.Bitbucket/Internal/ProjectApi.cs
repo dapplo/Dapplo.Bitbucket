@@ -49,15 +49,22 @@ namespace Dapplo.Bitbucket.Internal
 		}
 
 
-		public async Task<Results<Project>> GetFirstAsync(int limit = 25, int start = 0, CancellationToken token = default(CancellationToken))
+		public async Task<Results<Project>> GetAllAsync(PagingInfo pagingInfo = null, CancellationToken token = default(CancellationToken))
 		{
 			var projectsUri = _bitbucketClient.BitbucketApiUri.AppendSegments("projects");
-			if (start > 0)
+			if (pagingInfo != null)
 			{
-				projectsUri = projectsUri.ExtendQuery("start", start);
-
+				if (pagingInfo.IsLastPage)
+				{
+					return new Results<Project>()
+					{
+						IsLastPage = true,
+						Values = new List<Project>()
+					};
+				}
+				projectsUri = projectsUri.ExtendQuery("start", pagingInfo.NextPageStart);
+				projectsUri = projectsUri.ExtendQuery("limit", pagingInfo.Limit);
 			}
-			projectsUri = projectsUri.ExtendQuery("limit", limit);
 			_bitbucketClient.PromoteContext();
 			var response = await projectsUri.GetAsAsync<HttpResponse<Results<Project>, Error>>(token);
 			if (response.HasError)
@@ -68,29 +75,19 @@ namespace Dapplo.Bitbucket.Internal
 			return response.Response;
 		}
 
-		public async Task<Results<Project>> GetNextAsync(Results<Project> previous, CancellationToken token = default(CancellationToken))
+
+		/// <inheritdoc />
+		public async Task<TBitmap> GetAvatarAsync<TBitmap>(string projectKey, int? size = null, CancellationToken cancellationToken = new CancellationToken())
+			where TBitmap : class
 		{
-			// Return empty object when the previous was the last
-			if (previous.IsLastPage)
+			var projectAvatarUri = _bitbucketClient.BitbucketApiUri.AppendSegments("projects", projectKey, "avatar.png");
+			if (size.HasValue)
 			{
-				return new Results<Project>()
-				{
-					IsLastPage = true,
-					Values = new List<Project>()
-				};
+				projectAvatarUri = projectAvatarUri.ExtendQuery("s", size.Value);
 			}
 
-			var projectsUri = _bitbucketClient.BitbucketApiUri.AppendSegments("projects");
-			projectsUri = projectsUri.ExtendQuery("start", previous.NextPageStart);
-			projectsUri = projectsUri.ExtendQuery("limit", previous.Limit);
 			_bitbucketClient.PromoteContext();
-			var response = await projectsUri.GetAsAsync<HttpResponse<Results<Project>, Error>>(token);
-			if (response.HasError)
-			{
-				throw new Exception(response.ErrorResponse.Message);
-			}
-
-			return response.Response;
+			return await projectAvatarUri.GetAsAsync<TBitmap>(cancellationToken).ConfigureAwait(false);
 		}
 	}
 }

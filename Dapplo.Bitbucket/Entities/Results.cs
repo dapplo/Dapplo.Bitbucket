@@ -5,25 +5,25 @@ using System.Runtime.Serialization;
 namespace Dapplo.Bitbucket.Entities
 {
 	[DataContract]
-	public class Results<TResult> : IEnumerable<TResult>
+	public class Results<TResult> : PagingInfo, IEnumerable<TResult>
 	{
+		/// <summary>
+		/// The size of the result
+		/// </summary>
 		[DataMember(Name = "size", EmitDefaultValue = false)]
 		public int Size { get; set; }
 
-		[DataMember(Name = "limit", EmitDefaultValue = false)]
-		public int Limit { get; set; }
-
-		[DataMember(Name = "isLastPage", EmitDefaultValue = false)]
-		public bool IsLastPage { get; set; }
-
-		[DataMember(Name = "values", EmitDefaultValue = false)]
-		public IList<TResult> Values { get; set; }
-
+		/// <summary>
+		/// The starting position of the result
+		/// </summary>
 		[DataMember(Name = "start", EmitDefaultValue = false)]
 		public int Start { get; set; }
 
-		[DataMember(Name = "nextPageStart", EmitDefaultValue = false)]
-		public int NextPageStart { get; set; }
+		/// <summary>
+		/// The values of the result
+		/// </summary>
+		[DataMember(Name = "values", EmitDefaultValue = false)]
+		public IList<TResult> Values { get; set; }
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{

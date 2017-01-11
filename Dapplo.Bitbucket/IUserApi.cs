@@ -39,6 +39,14 @@ namespace Dapplo.Bitbucket
 	public interface IUserApi
 	{
 		/// <summary>
+		///     Get all users
+		/// </summary>
+		/// <param name="pagingInfo">PagingInfo to get the next page, this should simply be the results object</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns>Results with User instances</returns>
+		Task<Results<User>> GetAllAsync(PagingInfo pagingInfo = null, CancellationToken cancellationToken = new CancellationToken());
+
+		/// <summary>
 		///     Get user information
 		/// </summary>
 		/// <param name="userSlug">string with userSlug (this might not be the username)</param>
@@ -50,9 +58,56 @@ namespace Dapplo.Bitbucket
 		///     Get avatar for the user
 		/// </summary>
 		/// <param name="userslug">string with userSlug (this might not be the username)</param>
+		/// <param name="size">optional size</param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>Bitmap or ImageSource</returns>
-		Task<TBitmap> GetAvatarAsync<TBitmap>(string userslug, CancellationToken cancellationToken = default(CancellationToken))
+		Task<TBitmap> GetAvatarAsync<TBitmap>(string userslug, int? size = null, CancellationToken cancellationToken = default(CancellationToken))
 			where TBitmap : class;
+
+		/// <summary>
+		///     Get avatar for the user
+		/// </summary>
+		/// <param name="user">User</param>
+		/// <param name="size">optional size</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns>Bitmap or ImageSource</returns>
+		Task<TBitmap> GetAvatarAsync<TBitmap>(User user, int? size = null, CancellationToken cancellationToken = default(CancellationToken))
+			where TBitmap : class;
+
+		/// <summary>
+		/// Set the avatar for the specified user
+		/// </summary>
+		/// <typeparam name="TBitmap">Type for the avatar bitmap container object. e.g. MemoryStream, Bitmap, BitmapSource</typeparam>
+		/// <param name="user">User</param>
+		/// <param name="avatar">the container with the avatar information</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns></returns>
+		Task ChangeAvatarAsync<TBitmap>(User user, TBitmap avatar, CancellationToken cancellationToken = new CancellationToken()) where TBitmap : class;
+
+		/// <summary>
+		/// Set the avatar for the specified user
+		/// </summary>
+		/// <typeparam name="TBitmap">Type for the avatar bitmap container object. e.g. MemoryStream, Bitmap, BitmapSource</typeparam>
+		/// <param name="userSlug">Slug from the User object</param>
+		/// <param name="avatar">the container with the avatar information</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns></returns>
+		Task ChangeAvatarAsync<TBitmap>(string userSlug, TBitmap avatar, CancellationToken cancellationToken = new CancellationToken()) where TBitmap : class;
+
+		/// <summary>
+		/// Deletes the avatar for the specified user
+		/// </summary>
+		/// <param name="userSlug">Slug from the User object</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns></returns>
+		Task DeleteAvatarAsync(string userSlug, CancellationToken cancellationToken = new CancellationToken());
+
+		/// <summary>
+		/// Deletes the avatar for the specified user
+		/// </summary>
+		/// <param name="user">User</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns></returns>
+		Task DeleteAvatarAsync(User user, CancellationToken cancellationToken = new CancellationToken());
 	}
 }

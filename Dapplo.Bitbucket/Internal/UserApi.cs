@@ -48,6 +48,20 @@ namespace Dapplo.Bitbucket.Internal
 		}
 
 		/// <inheritdoc />
+		public async Task<Results<User>> GetAllAsync(PagingInfo pagingInfo = null, CancellationToken cancellationToken = new CancellationToken())
+		{
+			_bitbucketClient.PromoteContext();
+			var usersUri = _bitbucketClient.BitbucketApiUri.AppendSegments("users");
+
+			var response = await usersUri.GetAsAsync<HttpResponse<Results<User>, Error>>(cancellationToken).ConfigureAwait(false);
+			if (response.HasError)
+			{
+				throw new Exception(response.ErrorResponse.Message);
+			}
+			return response.Response;
+		}
+
+		/// <inheritdoc />
 		public async Task<User> GetAsync(string userSlug, CancellationToken cancellationToken = new CancellationToken())
 		{
 			_bitbucketClient.PromoteContext();
@@ -62,13 +76,51 @@ namespace Dapplo.Bitbucket.Internal
 		}
 
 		/// <inheritdoc />
-		public async Task<TBitmap> GetAvatarAsync<TBitmap>(string userslug, CancellationToken cancellationToken = new CancellationToken())
+		public async Task<TBitmap> GetAvatarAsync<TBitmap>(string userslug, int? size = null, CancellationToken cancellationToken = new CancellationToken())
 			where TBitmap : class
 		{
 			_bitbucketClient.PromoteContext();
 			// This doesn't use the API itself!
 			var avatarUri = _bitbucketClient.BitbucketUri.AppendSegments("users", userslug, "avatar.png");
+			if (size.HasValue)
+			{
+				avatarUri = avatarUri.ExtendQuery("s", size.Value);
+			}
 			return await avatarUri.GetAsAsync<TBitmap>(cancellationToken).ConfigureAwait(false);
+		}
+
+		/// <inheritdoc />
+		public async Task<TBitmap> GetAvatarAsync<TBitmap>(User user, int? size = null, CancellationToken cancellationToken = new CancellationToken()) where TBitmap : class
+		{
+			return await GetAvatarAsync<TBitmap>(user.Slug, size, cancellationToken);
+		}
+
+		/// <inheritdoc />
+		public async Task ChangeAvatarAsync<TBitmap>(string userslug, TBitmap avatar, CancellationToken cancellationToken = new CancellationToken()) where TBitmap : class
+		{
+			_bitbucketClient.PromoteContext();
+			var avatarUri = _bitbucketClient.BitbucketUri.AppendSegments("users", userslug, "avatar.png");
+			await avatarUri.PostAsync(avatar, cancellationToken);
+		}
+
+		/// <inheritdoc />
+		public async Task ChangeAvatarAsync<TBitmap>(User user, TBitmap avatar, CancellationToken cancellationToken = new CancellationToken()) where TBitmap : class
+		{
+			await ChangeAvatarAsync(user.Slug, avatar, cancellationToken);
+		}
+
+		/// <inheritdoc />
+		public async Task DeleteAvatarAsync(string userslug, CancellationToken cancellationToken = new CancellationToken())
+		{
+			_bitbucketClient.PromoteContext();
+			var avatarUri = _bitbucketClient.BitbucketUri.AppendSegments("users", userslug, "avatar.png");
+			await avatarUri.DeleteAsync(cancellationToken);
+		}
+
+		/// <inheritdoc />
+		public async Task DeleteAvatarAsync(User user, CancellationToken cancellationToken = new CancellationToken())
+		{
+			await DeleteAvatarAsync(user.Slug, cancellationToken);
 		}
 	}
 }

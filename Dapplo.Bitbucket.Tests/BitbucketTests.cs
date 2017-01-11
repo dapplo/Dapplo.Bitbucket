@@ -28,6 +28,7 @@
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
+using Dapplo.Bitbucket.Entities;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
@@ -42,6 +43,7 @@ namespace Dapplo.Bitbucket.Tests
 	/// </summary>
 	public class BitbucketTests
 	{
+		private static readonly LogSource Log = new LogSource();
 		public BitbucketTests(ITestOutputHelper testOutputHelper)
 		{
 			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
@@ -81,12 +83,40 @@ namespace Dapplo.Bitbucket.Tests
 		[Fact]
 		public async Task TestGetProjects()
 		{
-			var projects = await _bitbucketClient.Project.GetFirstAsync();
+			Results<Project> projects = null;
 			do
 			{
+				projects = await _bitbucketClient.Project.GetAllAsync(projects ?? new PagingInfo {Limit = 5});
 				Assert.NotNull(projects);
-				projects = await _bitbucketClient.Project.GetNextAsync(projects);
+				Assert.True(projects.Size > 0);
+				foreach (var project in projects)
+				{
+					Log.Info().WriteLine("{0} : {1} - {2}", project.Id, project.Description, project.Type);
+				}
 			} while (!projects.IsLastPage);
+		}
+
+		[Fact]
+		public async Task TestGetUsers()
+		{
+			Results<User> users = null;
+			int processedUsers = 0;
+			do
+			{
+				users = await _bitbucketClient.User.GetAllAsync(users ?? new PagingInfo { Limit = 20 });
+				Assert.NotNull(users);
+				Assert.True(users.Size > 0);
+				foreach (var user in users)
+				{
+					Log.Info().WriteLine("{0} : {1}", user.Id, user.DisplayName);
+				}
+				// Make sure we don't query all users, this might take forever...
+				processedUsers += users.Size;
+				if (processedUsers > 100)
+				{
+					break;
+				}
+			} while (!users.IsLastPage);
 		}
 	}
 }
