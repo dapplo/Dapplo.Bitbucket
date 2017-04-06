@@ -26,127 +26,113 @@
 #region Usings
 
 using System;
+using Dapplo.Bitbucket.Domains;
 using Dapplo.Bitbucket.Internal;
 using Dapplo.HttpExtensions;
+using Dapplo.HttpExtensions.JsonSimple;
 
 #endregion
 
 namespace Dapplo.Bitbucket
 {
-	/// <summary>
-	///     A Bitbucket client build by using Dapplo.HttpExtensions
-	/// </summary>
-	public class BitbucketClient : IBitbucketClient
-	{
-		/// <summary>
-		///     Store the specific HttpBehaviour, which contains a IHttpSettings and also some additional logic for making a
-		///     HttpClient which works with Confluence
-		/// </summary>
-		private readonly IHttpBehaviour _behaviour;
+    /// <summary>
+    ///     A Bitbucket client build by using Dapplo.HttpExtensions
+    /// </summary>
+    public class BitbucketClient : IUserDomain, IProjectDomain, IRepositoryDomain
+    {
+        /// <summary>
+        ///     Password for the basic authentication
+        /// </summary>
+        private string _password;
 
-		/// <summary>
-		///     Password for the basic authentication
-		/// </summary>
-		private string _password;
+        /// <summary>
+        ///     User for the basic authentication
+        /// </summary>
+        private string _user;
 
-		/// <summary>
-		///     User for the basic authentication
-		/// </summary>
-		private string _user;
+        /// <summary>
+        ///     Create the ConfluenceApi object, here the HttpClient is configured
+        /// </summary>
+        /// <param name="bitbucketUri">Base URL, e.g. https://yourConfluenceserver</param>
+        /// <param name="httpSettings">IHttpSettings or null for default</param>
+        private BitbucketClient(Uri bitbucketUri, IHttpSettings httpSettings = null)
+        {
+            if (bitbucketUri == null)
+            {
+                throw new ArgumentNullException(nameof(bitbucketUri));
+            }
+            BitbucketUri = bitbucketUri;
+            BitbucketApiUri = bitbucketUri.AppendSegments("rest", "api", "1.0");
 
-		/// <summary>
-		///     Create the ConfluenceApi object, here the HttpClient is configured
-		/// </summary>
-		/// <param name="bitbucketUri">Base URL, e.g. https://yourConfluenceserver</param>
-		/// <param name="httpSettings">IHttpSettings or null for default</param>
-		private BitbucketClient(Uri bitbucketUri, IHttpSettings httpSettings = null)
-		{
-			if (bitbucketUri == null)
-			{
-				throw new ArgumentNullException(nameof(bitbucketUri));
-			}
-			BitbucketUri = bitbucketUri;
-			BitbucketApiUri = bitbucketUri.AppendSegments("rest", "api", "1.0");
+            Behaviour = ConfigureBehaviour(new HttpBehaviour(), httpSettings);
+        }
 
-			_behaviour = ConfigureBehaviour(new HttpBehaviour(), httpSettings);
-			User = new UserApi(this);
-			Repository = new RepositoryApi(this);
-			Project = new ProjectApi(this);
-		}
+        /// <summary>
+        ///     The IHttpBehaviour for this Confluence instance
+        /// </summary>
+        public IHttpBehaviour Behaviour { get; }
 
-		/// <summary>
-		///     The IHttpBehaviour for this Confluence instance
-		/// </summary>
-		public IHttpBehaviour HttpBehaviour => _behaviour;
+        /// <summary>
+        ///     Set Basic Authentication for the current client
+        /// </summary>
+        /// <param name="user">username</param>
+        /// <param name="password">password</param>
+        public void SetBasicAuthentication(string user, string password)
+        {
+            _user = user;
+            _password = password;
+        }
 
-		/// <summary>
-		///     Set Basic Authentication for the current client
-		/// </summary>
-		/// <param name="user">username</param>
-		/// <param name="password">password</param>
-		public void SetBasicAuthentication(string user, string password)
-		{
-			_user = user;
-			_password = password;
-		}
+        /// <summary>
+        ///     The base URI for your Confluence server api calls
+        /// </summary>
+        public Uri BitbucketApiUri { get; }
 
-		/// <summary>
-		///     This makes sure that the HttpBehavior is promoted for the following Http call.
-		/// </summary>
-		public void PromoteContext()
-		{
-			_behaviour.MakeCurrent();
-		}
+        /// <summary>
+        ///     The base URI for your Confluence server downloads
+        /// </summary>
+        public Uri BitbucketUri { get; }
 
-		/// <summary>
-		///     The base URI for your Confluence server api calls
-		/// </summary>
-		public Uri BitbucketApiUri { get; }
+        /// <inheritdoc />
+        public IUserDomain User => this;
 
-		/// <summary>
-		///     The base URI for your Confluence server downloads
-		/// </summary>
-		public Uri BitbucketUri { get; }
+        /// <inheritdoc />
+        public IRepositoryDomain Repository => this;
 
-		/// <inheritdoc />
-		public IUserApi User { get; }
+        /// <inheritdoc />
+        public IProjectDomain Project => this;
 
-		/// <inheritdoc />
-		public IRepositoryApi Repository { get; }
+        /// <summary>
+        ///     Factory method to create a BitbucketClient
+        /// </summary>
+        /// <param name="bitbucketUri">Uri to your bitbucket server</param>
+        /// <param name="httpSettings">IHttpSettings used if you need specific settings</param>
+        /// <returns>IBitbucketClient</returns>
+        public static IBitbucketClient Create(Uri bitbucketUri, IHttpSettings httpSettings = null)
+        {
+            return new BitbucketClient(bitbucketUri, httpSettings);
+        }
 
-		/// <inheritdoc />
-		public IProjectApi Project { get; }
-
-		/// <summary>
-		///     Factory method to create a BitbucketClient
-		/// </summary>
-		/// <param name="bitbucketUri">Uri to your bitbucket server</param>
-		/// <param name="httpSettings">IHttpSettings used if you need specific settings</param>
-		/// <returns>IBitbucketClient</returns>
-		public static IBitbucketClient Create(Uri bitbucketUri, IHttpSettings httpSettings = null)
-		{
-			return new BitbucketClient(bitbucketUri, httpSettings);
-		}
-
-		/// <summary>
-		///     Helper method to configure the IChangeableHttpBehaviour
-		/// </summary>
-		/// <param name="behaviour">IChangeableHttpBehaviour</param>
-		/// <param name="httpSettings">IHttpSettings</param>
-		/// <returns>the behaviour, but configured as IHttpBehaviour </returns>
-		private IHttpBehaviour ConfigureBehaviour(IChangeableHttpBehaviour behaviour, IHttpSettings httpSettings = null)
-		{
-			behaviour.HttpSettings = httpSettings ?? HttpExtensionsGlobals.HttpSettings;
-			behaviour.OnHttpRequestMessageCreated = httpRequestMessage =>
-			{
-				httpRequestMessage?.Headers.TryAddWithoutValidation("X-Atlassian-Token", "no-check");
-				if (!string.IsNullOrEmpty(_user) && (_password != null))
-				{
-					httpRequestMessage?.SetBasicAuthorization(_user, _password);
-				}
-				return httpRequestMessage;
-			};
-			return behaviour;
-		}
-	}
+        /// <summary>
+        ///     Helper method to configure the IChangeableHttpBehaviour
+        /// </summary>
+        /// <param name="behaviour">IChangeableHttpBehaviour</param>
+        /// <param name="httpSettings">IHttpSettings</param>
+        /// <returns>the behaviour, but configured as IHttpBehaviour </returns>
+        private IHttpBehaviour ConfigureBehaviour(IChangeableHttpBehaviour behaviour, IHttpSettings httpSettings = null)
+        {
+            behaviour.JsonSerializer = new SimpleJsonSerializer();
+            behaviour.HttpSettings = httpSettings ?? HttpExtensionsGlobals.HttpSettings.ShallowClone();
+            behaviour.OnHttpRequestMessageCreated = httpRequestMessage =>
+            {
+                httpRequestMessage?.Headers.TryAddWithoutValidation("X-Atlassian-Token", "no-check");
+                if (!string.IsNullOrEmpty(_user) && (_password != null))
+                {
+                    httpRequestMessage?.SetBasicAuthorization(_user, _password);
+                }
+                return httpRequestMessage;
+            };
+            return behaviour;
+        }
+    }
 }

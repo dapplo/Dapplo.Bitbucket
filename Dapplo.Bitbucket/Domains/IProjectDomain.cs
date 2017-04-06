@@ -25,22 +25,16 @@
 
 #region Usings
 
-using System.Runtime.Serialization;
+
 
 #endregion
 
-namespace Dapplo.Bitbucket.Entities
+namespace Dapplo.Bitbucket.Domains
 {
-    /// <summary>
-    /// Link to "self"
-    /// </summary>
-    [DataContract]
-    public class Self
-    {
-        /// <summary>
-        /// The actual link
-        /// </summary>
-        [DataMember(Name = "href", EmitDefaultValue = false)]
-        public string Href { get; set; }
-    }
+	/// <summary>
+	///     The interface to all project related functionality
+	/// </summary>
+	public interface IProjectDomain : IBitbucketDomain
+	{
+	}
 }

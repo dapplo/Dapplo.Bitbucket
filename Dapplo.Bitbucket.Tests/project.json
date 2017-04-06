@@ -1,23 +1,23 @@
-﻿{
+{
 	"version": "1.0.0-*",
 	"title": "Dapplo.Bitbucket.Tests",
 	"authors": ["Robin Krom"],
 	"copyright": "Copyright © Dapplo 2016",
 	"description": "Tests for Dapplo.Bitbucket",
 	"supports": {},
-	"dependencies": {
-		"Dapplo.Log": "1.0.22",
-		"Dapplo.Log.XUnit": "1.0.22",
-		"Dapplo.Bitbucket": "*",
-		"xunit.runner.visualstudio": "2.1.0",
-		"Xunit.StaFact": "0.1.36-beta",
-		"ReportGenerator": "2.5.1",
-		"Dapplo.Utils": "1.0.131"
-	},
+    "dependencies": {
+        "Dapplo.Bitbucket": "*",
+        "xunit.runner.visualstudio": "2.1.0",
+        "Xunit.StaFact": "0.1.36-beta",
+        "Dapplo.Log": "1.0.25",
+        "Dapplo.Log.XUnit": "1.0.25",
+        "Dapplo.Utils": "1.0.132",
+        "NETStandard.Library": "1.6.1",
+        "ReportGenerator": "2.5.6"
+    },
 	"frameworks": {
 		"net45": {
 			"dependencies": {
-				"NETStandard.Library": "1.6.0"
 			},
 			"frameworkAssemblies": {
 				"PresentationCore": "4.0.0.0",

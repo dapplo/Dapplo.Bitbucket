@@ -27,6 +27,7 @@
 
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapplo.Bitbucket.Entities;
 using Dapplo.Log;
@@ -38,92 +39,124 @@ using Xunit.Abstractions;
 
 namespace Dapplo.Bitbucket.Tests
 {
-	/// <summary>
-	///     Tests
-	/// </summary>
-	public class BitbucketTests
-	{
-		private static readonly LogSource Log = new LogSource();
-		public BitbucketTests(ITestOutputHelper testOutputHelper)
-		{
-			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-			_bitbucketClient = BitbucketClient.Create(BitbucketTestUri);
+    /// <summary>
+    ///     Tests
+    /// </summary>
+    public class BitbucketTests
+    {
+        private static readonly LogSource Log = new LogSource();
+        private readonly string _username = Environment.GetEnvironmentVariable("bitbucket_test_username");
+        private readonly string _password = Environment.GetEnvironmentVariable("bitbucket_test_password");
 
-			if (!string.IsNullOrEmpty(_username) && !string.IsNullOrEmpty(_password))
-			{
-				_bitbucketClient.SetBasicAuthentication(_username, _password);
-			}
-		}
+        // Specify the URI for the Bitbucket server
+        // ReSharper disable once AssignNullToNotNullAttribute
+        private static readonly Uri BitbucketTestUri = new Uri(Environment.GetEnvironmentVariable("bitbucket_test_url"));
 
-		private readonly string _username = Environment.GetEnvironmentVariable("bitbucket_test_username");
-		private readonly string _password = Environment.GetEnvironmentVariable("bitbucket_test_password");
+        private readonly IBitbucketClient _bitbucketClient;
 
-		// Specify the URI for the Bitbucket server
-		// ReSharper disable once AssignNullToNotNullAttribute
-		private static readonly Uri BitbucketTestUri = new Uri(Environment.GetEnvironmentVariable("bitbucket_test_url"));
+        public BitbucketTests(ITestOutputHelper testOutputHelper)
+        {
+            LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+            _bitbucketClient = BitbucketClient.Create(BitbucketTestUri);
 
+            if (!string.IsNullOrEmpty(_username) && !string.IsNullOrEmpty(_password))
+            {
+                _bitbucketClient.SetBasicAuthentication(_username, _password);
+            }
+        }
 
-		private readonly IBitbucketClient _bitbucketClient;
+        [Fact]
+        public async Task TestGetUser()
+        {
+            var user = await _bitbucketClient.User.GetAsync(_username);
+            Assert.NotNull(user);
+        }
 
-		[Fact]
-		public async Task TestGetUser()
-		{
-			var user = await _bitbucketClient.User.GetAsync(_username);
-			Assert.NotNull(user);
-		}
+        [Fact]
+        public async Task TestGetUserSettings()
+        {
+            var user = await _bitbucketClient.User.GetSettingsAsync(_username);
+            Assert.NotNull(user);
+        }
 
-		[Fact]
-		public async Task TestGetUserSettings()
-		{
-			var user = await _bitbucketClient.User.GetSettingsAsync(_username);
-			Assert.NotNull(user);
-		}
+        [Fact]
+        public async Task TestGetUserAvatar()
+        {
+            // a size of 48 might not result in a with of 48...
+            var avatar = await _bitbucketClient.User.GetAvatarAsync<Bitmap>(_username, 48);
+            Assert.NotNull(avatar);
+            Assert.True(avatar.Width > 0);
+        }
 
-		[Fact]
-		public async Task TestGetUserAvatar()
-		{
-			var avatar = await _bitbucketClient.User.GetAvatarAsync<Bitmap>(_username);
-			Assert.NotNull(avatar);
-			Assert.True(avatar.Width > 0);
-		}
+        [Fact]
+        public async Task TestGetProjects()
+        {
+            Results<Project> projects = null;
+            do
+            {
+                projects = await _bitbucketClient.Project.GetAllAsync(projects ?? new PagingInfo {Limit = 5});
+                Assert.NotNull(projects);
+                Assert.True(projects.Size > 0);
+                foreach (var project in projects)
+                {
+                    Log.Info().WriteLine("{0} : {1} - {2}", project.Id, project.Description, project.Type);
+                }
+            } while (!projects.IsLastPage);
+        }
 
-		[Fact]
-		public async Task TestGetProjects()
-		{
-			Results<Project> projects = null;
-			do
-			{
-				projects = await _bitbucketClient.Project.GetAllAsync(projects ?? new PagingInfo {Limit = 5});
-				Assert.NotNull(projects);
-				Assert.True(projects.Size > 0);
-				foreach (var project in projects)
-				{
-					Log.Info().WriteLine("{0} : {1} - {2}", project.Id, project.Description, project.Type);
-				}
-			} while (!projects.IsLastPage);
-		}
+        [Fact]
+        public async Task TestGetRepositories()
+        {
+            Results<Project> projects = null;
+            Results<Repository> repositories = null;
+            bool isFinished = false;
+            do
+            {
+                projects = await _bitbucketClient.Project.GetAllAsync(projects ?? new PagingInfo { Limit = 5 });
+                Assert.NotNull(projects);
+                Assert.True(projects.Size > 0);
+                foreach (var project in projects)
+                {
+                    repositories = await _bitbucketClient.Repository.GetAllAsync(project.Key, repositories ?? new PagingInfo { Limit = 5 });
+                    var repo = repositories.FirstOrDefault();
+                    if (repo == null)
+                    {
+                        continue;
+                    }
+                    Log.Info().WriteLine("{0} : {1} - {2}", repo.Name, repo.State, repo.CloneUrl);
+                    var commits = await _bitbucketClient.Repository.GetCommitsAsync(project.Key, repo.Slug, new PagingInfo {Limit = 5});
+                    var commit = commits.FirstOrDefault();
+                    if (commit != null)
+                    {
+                        Log.Info().WriteLine("{0} : {1} - {2}", commit.Id, commit.Author.DisplayName, commit.Message);
+                        isFinished = true;
+                    }
+                    break;
+                }
+            } while (!isFinished && !projects.IsLastPage);
+        }
 
-		[Fact]
-		public async Task TestGetUsers()
-		{
-			Results<User> users = null;
-			int processedUsers = 0;
-			do
-			{
-				users = await _bitbucketClient.User.GetAllAsync(users ?? new PagingInfo { Limit = 20 });
-				Assert.NotNull(users);
-				Assert.True(users.Size > 0);
-				foreach (var user in users)
-				{
-					Log.Info().WriteLine("{0} : {1}", user.Id, user.DisplayName);
-				}
-				// Make sure we don't query all users, this might take forever...
-				processedUsers += users.Size;
-				if (processedUsers > 100)
-				{
-					break;
-				}
-			} while (!users.IsLastPage);
-		}
-	}
+        [Fact]
+        public async Task TestGetUsers()
+        {
+            Results<User> users = null;
+            int processedUsers = 0;
+            do
+            {
+                users = await _bitbucketClient.User.GetAllAsync(users ?? new PagingInfo { Limit = 20 });
+                Assert.NotNull(users);
+                Assert.True(users.Size > 0);
+                foreach (var user in users)
+                {
+                    Log.Info().WriteLine("{0} : {1}", user.Id, user.DisplayName);
+                }
+                // Make sure we don't query all users, this might take forever...
+                processedUsers += users.Size;
+                if (processedUsers > 100)
+                {
+                    break;
+                }
+            } while (!users.IsLastPage);
+        }
+    }
 }

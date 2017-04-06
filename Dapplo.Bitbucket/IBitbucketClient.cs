@@ -26,48 +26,52 @@
 #region Usings
 
 using System;
+using Dapplo.Bitbucket.Domains;
+using Dapplo.HttpExtensions;
 
 #endregion
 
 namespace Dapplo.Bitbucket
 {
-	/// <summary>
-	///     The is the interface to the base client functionality of the Confluence API
-	/// </summary>
-	public interface IBitbucketClient
-	{
-		/// <summary>
-		///     The base URI for your Bitbucket server api calls
-		/// </summary>
-		Uri BitbucketApiUri { get; }
+    /// <summary>
+    ///     The is the interface to the base client functionality of the Confluence API
+    /// </summary>
+    public interface IBitbucketClient
+    {
+        /// <summary>
+        ///     The base URI for your Bitbucket server api calls
+        /// </summary>
+        Uri BitbucketApiUri { get; }
 
-		/// <summary>
-		///     The base URI for your Bitbucket server downloads
-		/// </summary>
-		Uri BitbucketUri { get; }
+        /// <summary>
+        ///     The base URI for your Bitbucket server downloads
+        /// </summary>
+        Uri BitbucketUri { get; }
 
-		/// <summary>
-		///     Methods in the user domain
-		/// </summary>
-		IUserApi User { get; }
+        /// <summary>
+        ///     Methods in the user domain
+        /// </summary>
+        IUserDomain User { get; }
 
-		/// <summary>
-		///     Methods in the user domain
-		/// </summary>
-		IProjectApi Project { get; }
+        /// <summary>
+        ///     Methods in the user domain
+        /// </summary>
+        IProjectDomain Project { get; }
 
-		/// <summary>
-		///     Methods in the repository domain
-		/// </summary>
-		IRepositoryApi Repository { get; }
+        /// <summary>
+        ///     Methods in the repository domain
+        /// </summary>
+        IRepositoryDomain Repository { get; }
 
-		void PromoteContext();
+        ///     Store the specific HttpBehaviour, which contains a IHttpSettings and also some additional logic for making a
+        ///     HttpClient which works with Confluence
+        IHttpBehaviour Behaviour { get; }
 
-		/// <summary>
-		///     Enables basic authentication for every request following this call
-		/// </summary>
-		/// <param name="user">string with the confluence user</param>
-		/// <param name="password">string with the password for the confluence user</param>
-		void SetBasicAuthentication(string user, string password);
-	}
+        /// <summary>
+        ///     Enables basic authentication for every request following this call
+        /// </summary>
+        /// <param name="user">string with the confluence user</param>
+        /// <param name="password">string with the password for the confluence user</param>
+        void SetBasicAuthentication(string user, string password);
+    }
 }

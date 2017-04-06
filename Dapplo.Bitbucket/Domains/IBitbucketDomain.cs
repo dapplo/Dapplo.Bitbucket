@@ -25,25 +25,14 @@
 
 #region Usings
 
-using System.Threading;
-using System.Threading.Tasks;
-using Dapplo.Bitbucket.Entities;
-
 #endregion
 
-namespace Dapplo.Bitbucket
+namespace Dapplo.Bitbucket.Domains
 {
 	/// <summary>
-	///     The interface to all project related functionality
+	///     The base interface for all domains
 	/// </summary>
-	public interface IProjectApi
+	public interface IBitbucketDomain : IBitbucketClient
 	{
-		/// <summary>
-		///     Retrieve all projects which the current user is allowed to see
-		/// </summary>
-		/// <param name="pagingInfo">PagingInfo to enable paging, the Results object is of type PagingInfo</param>
-		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns>Results with projects</returns>
-		Task<Results<Project>> GetAllAsync(PagingInfo pagingInfo = null, CancellationToken cancellationToken = default(CancellationToken));
 	}
 }

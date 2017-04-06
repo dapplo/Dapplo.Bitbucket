@@ -31,25 +31,46 @@ using System.Runtime.Serialization;
 
 namespace Dapplo.Bitbucket.Entities
 {
-	[DataContract]
-	public class BuildState
-	{
-		[DataMember(Name = "state", EmitDefaultValue = false)]
-		public BuildStates State { get; set; }
+    /// <summary>
+    /// The state containerof the build for the specified commit
+    /// </summary>
+    [DataContract]
+    public class BuildState
+    {
+        /// <summary>
+        /// The state itself
+        /// </summary>
+        [DataMember(Name = "state", EmitDefaultValue = false)]
+        public BuildStates State { get; set; }
 
-		[DataMember(Name = "key", EmitDefaultValue = false)]
-		public string Key { get; set; }
+        /// <summary>
+        /// TODO: Document
+        /// </summary>
+        [DataMember(Name = "key", EmitDefaultValue = false)]
+        public string Key { get; set; }
 
-		[DataMember(Name = "name", EmitDefaultValue = false)]
-		public string Name { get; set; }
+        /// <summary>
+        /// TODO: Document
+        /// </summary>
+        [DataMember(Name = "name", EmitDefaultValue = false)]
+        public string Name { get; set; }
 
-		[DataMember(Name = "url", EmitDefaultValue = false)]
-		public string Url { get; set; }
+        /// <summary>
+        /// TODO: Document
+        /// </summary>
+        [DataMember(Name = "url", EmitDefaultValue = false)]
+        public string Url { get; set; }
 
-		[DataMember(Name = "description", EmitDefaultValue = false)]
-		public string Description { get; set; }
+        /// <summary>
+        /// TODO: Document
+        /// </summary>
+        [DataMember(Name = "description", EmitDefaultValue = false)]
+        public string Description { get; set; }
 
-		[DataMember(Name = "dateAdded", EmitDefaultValue = false)]
-		public string DateAdded { get; set; }
-	}
+        /// <summary>
+        /// TODO: Document
+        /// </summary>
+        [DataMember(Name = "dateAdded", EmitDefaultValue = false)]
+        public string DateAdded { get; set; }
+    }
 }

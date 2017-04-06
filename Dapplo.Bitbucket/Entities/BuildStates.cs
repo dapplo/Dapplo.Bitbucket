@@ -25,10 +25,22 @@
 
 namespace Dapplo.Bitbucket.Entities
 {
-	public enum BuildStates
-	{
-		SUCCESSFUL,
-		FAILED,
-		INPROGRESS
-	}
+    /// <summary>
+    /// Possible states of a build
+    /// </summary>
+    public enum BuildStates
+    {
+        /// <summary>
+        /// Build was successful
+        /// </summary>
+        SUCCESSFUL,
+        /// <summary>
+        /// Build failed
+        /// </summary>
+        FAILED,
+        /// <summary>
+        /// Build is running
+        /// </summary>
+        INPROGRESS
+    }
 }

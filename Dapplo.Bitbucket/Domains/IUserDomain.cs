@@ -25,19 +25,16 @@
 
 #region Usings
 
-using System.Runtime.Serialization;
+
 
 #endregion
 
-namespace Dapplo.Bitbucket.Entities
+namespace Dapplo.Bitbucket.Domains
 {
-	[DataContract]
-	public class Author
+	/// <summary>
+	///     The interface to all user related functionality
+	/// </summary>
+	public interface IUserDomain : IBitbucketDomain
 	{
-		[DataMember(Name = "name", EmitDefaultValue = false)]
-		public string Name { get; set; }
-
-		[DataMember(Name = "emailAddress", EmitDefaultValue = false)]
-		public string EmailAddress { get; set; }
 	}
 }

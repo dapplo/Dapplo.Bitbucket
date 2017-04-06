@@ -31,6 +31,9 @@ using System.Runtime.Serialization;
 
 namespace Dapplo.Bitbucket.Entities
 {
+	/// <summary>
+	/// User information
+	/// </summary>
 	[DataContract]
 	public class User
 	{
