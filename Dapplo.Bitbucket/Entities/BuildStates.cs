@@ -23,11 +23,14 @@
 
 #endregion
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Dapplo.Bitbucket.Entities
 {
     /// <summary>
     /// Possible states of a build
     /// </summary>
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum BuildStates
     {
         /// <summary>

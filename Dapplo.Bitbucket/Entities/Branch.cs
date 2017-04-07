@@ -31,19 +31,34 @@ using System.Runtime.Serialization;
 
 namespace Dapplo.Bitbucket.Entities
 {
-	[DataContract]
-	public class Branch
-	{
-		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public string Id { get; set; }
+    /// <summary>
+    /// Information on a branch
+    /// </summary>
+    [DataContract]
+    public class Branch
+    {
+        /// <summary>
+        /// ID of the branch
+        /// </summary>
+        [DataMember(Name = "id", EmitDefaultValue = false)]
+        public string Id { get; set; }
 
-		[DataMember(Name = "displayId", EmitDefaultValue = false)]
-		public string DisplayId { get; set; }
+        /// <summary>
+        /// ID to display
+        /// </summary>
+        [DataMember(Name = "displayId", EmitDefaultValue = false)]
+        public string DisplayId { get; set; }
 
-		[DataMember(Name = "latestChangeset", EmitDefaultValue = false)]
-		public string LatestChangeset { get; set; }
+        /// <summary>
+        /// The SHA for the most recent commit
+        /// </summary>
+        [DataMember(Name = "latestChangeset", EmitDefaultValue = false)]
+        public string LatestChangeset { get; set; }
 
-		[DataMember(Name = "isDefault", EmitDefaultValue = false)]
-		public bool IsDefault { get; set; }
-	}
+        /// <summary>
+        /// Is this the default branch?
+        /// </summary>
+        [DataMember(Name = "isDefault", EmitDefaultValue = false)]
+        public bool IsDefault { get; set; }
+    }
 }

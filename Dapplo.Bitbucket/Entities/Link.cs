@@ -31,13 +31,22 @@ using System.Runtime.Serialization;
 
 namespace Dapplo.Bitbucket.Entities
 {
-	[DataContract]
-	public class Link
-	{
-		[DataMember(Name = "url", EmitDefaultValue = false)]
-		public string Url { get; set; }
+    /// <summary>
+    /// Link information
+    /// </summary>
+    [DataContract]
+    public class Link
+    {
+        /// <summary>
+        /// The actual Url
+        /// </summary>
+        [DataMember(Name = "url", EmitDefaultValue = false)]
+        public string Url { get; set; }
 
-		[DataMember(Name = "rel", EmitDefaultValue = false)]
-		public string Rel { get; set; }
-	}
+        /// <summary>
+        /// TODO: Needs documentation
+        /// </summary>
+        [DataMember(Name = "rel", EmitDefaultValue = false)]
+        public string Rel { get; set; }
+    }
 }

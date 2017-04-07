@@ -27,7 +27,6 @@
 
 using System;
 using Dapplo.Bitbucket.Domains;
-using Dapplo.Bitbucket.Internal;
 using Dapplo.HttpExtensions;
 using Dapplo.HttpExtensions.JsonSimple;
 

@@ -37,44 +37,75 @@ namespace Dapplo.Bitbucket.Entities
     [DataContract]
     public class Repository
     {
-        public Repository()
-        {
-            ScmId = "git";
-        }
-
+        /// <summary>
+        /// The project slug is used wherever the API wants an ID of a repository
+        /// </summary>
         [DataMember(Name = "slug", EmitDefaultValue = false)]
         public string Slug { get; set; }
 
+        /// <summary>
+        /// ID of the repository
+        /// </summary>
         [DataMember(Name = "id", EmitDefaultValue = false)]
         public int Id { get; set; }
 
+        /// <summary>
+        /// The name of the repository
+        /// </summary>
         [DataMember(Name = "name", EmitDefaultValue = false)]
         public string Name { get; set; }
 
+        /// <summary>
+        /// The type of source control used, currently this is fixed to "git"
+        /// </summary>
         [DataMember(Name = "scmId", EmitDefaultValue = false)]
-        public string ScmId { get; set; }
+        public string ScmId { get; set; } = "git";
 
+        /// <summary>
+        /// The state of the repository
+        /// </summary>
         [DataMember(Name = "state", EmitDefaultValue = false)]
         public string State { get; set; }
 
+        /// <summary>
+        /// The status message of the repository
+        /// </summary>
         [DataMember(Name = "statusMessage", EmitDefaultValue = false)]
         public string StatusMessage { get; set; }
 
+        /// <summary>
+        /// Can this repository be forked?
+        /// </summary>
         [DataMember(Name = "forkable", EmitDefaultValue = false)]
         public bool IsForkable { get; set; }
 
+        /// <summary>
+        /// To which project does the repository belong
+        /// </summary>
         [DataMember(Name = "project", EmitDefaultValue = false)]
         public Project Project { get; set; }
 
+        /// <summary>
+        /// Is the repository public?
+        /// </summary>
         [DataMember(Name = "public", EmitDefaultValue = false)]
         public bool IsPublic { get; set; }
 
+        /// <summary>
+        /// The URL to use for cloning
+        /// </summary>
         [DataMember(Name = "cloneUrl", EmitDefaultValue = false)]
         public string CloneUrl { get; set; }
 
+        /// <summary>
+        /// The link (uri) to the repository
+        /// </summary>
         [DataMember(Name = "link", EmitDefaultValue = false)]
         public Link Link { get; set; }
 
+        /// <summary>
+        /// TODO: Needs documentation
+        /// </summary>
         [DataMember(Name = "links", EmitDefaultValue = false)]
         public Links Links { get; set; }
     }

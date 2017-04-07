@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using Dapplo.Bitbucket.Entities;
 using Dapplo.HttpExtensions;
 using Dapplo.Log;

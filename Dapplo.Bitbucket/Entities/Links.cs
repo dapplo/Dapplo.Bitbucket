@@ -32,9 +32,15 @@ using System.Runtime.Serialization;
 
 namespace Dapplo.Bitbucket.Entities
 {
-	[DataContract]
+    /// <summary>
+    /// TODO: Needs documentation
+    /// </summary>
+    [DataContract]
 	public class Links
 	{
+        /// <summary>
+        /// TODO: Needs documentation
+        /// </summary>
 		[DataMember(Name = "self", EmitDefaultValue = false)]
 		public IList<Self> Selfs { get; set; }
 	}

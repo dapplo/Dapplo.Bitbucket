@@ -37,27 +37,51 @@ namespace Dapplo.Bitbucket.Entities
     [DataContract]
     public class Project
     {
+        /// <summary>
+        /// The key for the project
+        /// </summary>
         [DataMember(Name = "key", EmitDefaultValue = false)]
         public string Key { get; set; }
 
+        /// <summary>
+        /// The id of the project
+        /// </summary>
         [DataMember(Name = "id", EmitDefaultValue = false)]
         public int Id { get; set; }
 
+        /// <summary>
+        /// The name of the project
+        /// </summary>
         [DataMember(Name = "name", EmitDefaultValue = false)]
         public string Name { get; set; }
 
+        /// <summary>
+        /// The description of the project
+        /// </summary>
         [DataMember(Name = "description", EmitDefaultValue = false)]
         public string Description { get; set; }
 
+        /// <summary>
+        /// Is the project public?
+        /// </summary>
         [DataMember(Name = "public", EmitDefaultValue = false)]
         public bool IsPublic { get; set; }
 
+        /// <summary>
+        /// Type of the project
+        /// </summary>
         [DataMember(Name = "type", EmitDefaultValue = false)]
         public string Type { get; set; }
 
+        /// <summary>
+        /// Link to the project
+        /// </summary>
         [DataMember(Name = "link", EmitDefaultValue = false)]
         public Link Link { get; set; }
 
+        /// <summary>
+        /// TODO: Needs documentation
+        /// </summary>
         [DataMember(Name = "links", EmitDefaultValue = false)]
         public Links Links { get; set; }
     }

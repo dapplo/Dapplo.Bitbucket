@@ -34,6 +34,10 @@ namespace Dapplo.Bitbucket.Entities
             return GetEnumerator();
         }
 
+        /// <summary>
+        /// Implementation of GetEnumerator
+        /// </summary>
+        /// <returns>IEnumerator with items of type TResult</returns>
         public IEnumerator<TResult> GetEnumerator()
         {
             return Values.GetEnumerator();

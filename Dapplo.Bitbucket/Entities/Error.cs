@@ -31,16 +31,28 @@ using System.Runtime.Serialization;
 
 namespace Dapplo.Bitbucket.Entities
 {
-	[DataContract]
-	public class Error
-	{
-		[DataMember(Name = "context", EmitDefaultValue = false)]
-		public string Context { get; set; }
+    /// <summary>
+    /// Error information
+    /// </summary>
+    [DataContract]
+    public class Error
+    {
+        /// <summary>
+        /// The context in which the error occured, mostly null
+        /// </summary>
+        [DataMember(Name = "context", EmitDefaultValue = false)]
+        public string Context { get; set; }
 
-		[DataMember(Name = "message", EmitDefaultValue = false)]
-		public string Message { get; set; }
+        /// <summary>
+        /// The error message
+        /// </summary>
+        [DataMember(Name = "message", EmitDefaultValue = false)]
+        public string Message { get; set; }
 
-		[DataMember(Name = "exceptionName", EmitDefaultValue = false)]
-		public string ExceptionName { get; set; }
-	}
+        /// <summary>
+        /// The name of the exception on the server side
+        /// </summary>
+        [DataMember(Name = "exceptionName", EmitDefaultValue = false)]
+        public string ExceptionName { get; set; }
+    }
 }

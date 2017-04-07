@@ -38,22 +38,40 @@ namespace Dapplo.Bitbucket.Entities
     [DataContract]
     public class Commit
     {
+        /// <summary>
+        /// ID (sha1) of the commit
+        /// </summary>
         [DataMember(Name = "id", EmitDefaultValue = false)]
         public string Id { get; set; }
 
+        /// <summary>
+        /// ID to display
+        /// </summary>
         [DataMember(Name = "displayId", EmitDefaultValue = false)]
         public string DisplayId { get; set; }
 
+        /// <summary>
+        /// User who made the commit
+        /// </summary>
         [DataMember(Name = "author", EmitDefaultValue = false)]
         public User Author { get; set; }
 
+        /// <summary>
+        /// Timestamp when the author made the commit
+        /// </summary>
         [DataMember(Name = "authorTimestamp", EmitDefaultValue = false)]
         public long AuthorTimestamp { get; set; }
 
+        /// <summary>
+        /// Commit message
+        /// </summary>
         [DataMember(Name = "message", EmitDefaultValue = false)]
         public string Message { get; set; }
 
+        /// <summary>
+        /// Parents for this commit
+        /// </summary>
         [DataMember(Name = "parents", EmitDefaultValue = false)]
-        public IList<Parent> Parents { get; set; }
+        public IList<Commit> Parents { get; set; }
     }
 }
