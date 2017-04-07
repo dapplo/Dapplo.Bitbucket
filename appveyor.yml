@@ -3,6 +3,7 @@ skip_tags: true
 configuration: Release
 platform: AnyCPU
 clone_depth: 2
+test: off
 branches:
   only:
   - master

@@ -10,7 +10,7 @@
         "licenseUrl": "http://www.gnu.org/licenses/lgpl-3.0.en.html",
         "projectUrl": "http://www.dapplo.net/blocks/Dapplo.Bitbucket/",
         "iconUrl": "http://www.dapplo.net/favicon.ico",
-        "tags": ["atlassian", "Bitbucket", "dapplo"],
+        "tags": ["Atlassian", "Bitbucket", "Stash", "Dapplo"],
         "requireLicenseAcceptance": false,
         "repository": {
             "type": "git",
