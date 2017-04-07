@@ -25,7 +25,6 @@
 
 #region Usings
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.Bitbucket.Domains;
@@ -58,7 +57,7 @@ namespace Dapplo.Bitbucket
             var repoUri = bitbucketClient.BitbucketApiUri.AppendSegments("projects", projectKey, "repos");
             bitbucketClient.Behaviour.MakeCurrent();
 
-            var response = await repoUri.PostAsync<HttpResponse<Repository, Error>>(newRepository, cancellationToken).ConfigureAwait(false);
+            var response = await repoUri.PostAsync<HttpResponse<Repository, ErrorList>>(newRepository, cancellationToken).ConfigureAwait(false);
             return response.HandleErrors();
         }
 
@@ -88,7 +87,7 @@ namespace Dapplo.Bitbucket
                 branchesUri = branchesUri.ExtendQuery("limit", pagingInfo.Limit);
             }
             bitbucketClient.Behaviour.MakeCurrent();
-            var response = await branchesUri.GetAsAsync<HttpResponse<Results<Branch>, Error>>(cancellationToken).ConfigureAwait(false);
+            var response = await branchesUri.GetAsAsync<HttpResponse<Results<Branch>, ErrorList>>(cancellationToken).ConfigureAwait(false);
             return response.HandleErrors();
         }
 
@@ -117,7 +116,7 @@ namespace Dapplo.Bitbucket
                 repositoriesUri = repositoriesUri.ExtendQuery("limit", pagingInfo.Limit);
             }
             bitbucketClient.Behaviour.MakeCurrent();
-            var response = await repositoriesUri.GetAsAsync<HttpResponse<Results<Repository>, Error>>(cancellationToken).ConfigureAwait(false);
+            var response = await repositoriesUri.GetAsAsync<HttpResponse<Results<Repository>, ErrorList>>(cancellationToken).ConfigureAwait(false);
             return response.HandleErrors();
         }
 
@@ -134,7 +133,7 @@ namespace Dapplo.Bitbucket
         {
             var commitUri = bitbucketClient.BitbucketApiUri.AppendSegments("projects", projectKey, "repos", repositorySlug, "commits", sha1);
             bitbucketClient.Behaviour.MakeCurrent();
-            var response = await commitUri.GetAsAsync<HttpResponse<Commit, Error>>(cancellationToken).ConfigureAwait(false);
+            var response = await commitUri.GetAsAsync<HttpResponse<Commit, ErrorList>>(cancellationToken).ConfigureAwait(false);
             return response.HandleErrors();
         }
 
@@ -164,7 +163,7 @@ namespace Dapplo.Bitbucket
                 commitsUri = commitsUri.ExtendQuery("limit", pagingInfo.Limit);
             }
             bitbucketClient.Behaviour.MakeCurrent();
-            var response = await commitsUri.GetAsAsync<HttpResponse<Results<Commit>, Error>>(cancellationToken).ConfigureAwait(false);
+            var response = await commitsUri.GetAsAsync<HttpResponse<Results<Commit>, ErrorList>>(cancellationToken).ConfigureAwait(false);
             return response.HandleErrors();
         }
 
@@ -179,7 +178,7 @@ namespace Dapplo.Bitbucket
         {
             var commitUri = bitbucketClient.BitbucketApiUri.AppendSegments("commits", changeSetSha);
             bitbucketClient.Behaviour.MakeCurrent();
-            var response = await commitUri.GetAsAsync<HttpResponse<Results<BuildState>, Error>>(cancellationToken).ConfigureAwait(false);
+            var response = await commitUri.GetAsAsync<HttpResponse<Results<BuildState>, ErrorList>>(cancellationToken).ConfigureAwait(false);
             return response.HandleErrors();
         }
 

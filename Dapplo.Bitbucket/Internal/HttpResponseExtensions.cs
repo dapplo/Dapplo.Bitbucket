@@ -1,7 +1,9 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using Dapplo.Bitbucket.Entities;
 using Dapplo.HttpExtensions;
 using Dapplo.Log;
+using System.Linq;
 
 namespace Dapplo.Bitbucket.Internal
 {
@@ -16,19 +18,24 @@ namespace Dapplo.Bitbucket.Internal
         /// Helper method to log the error
         /// </summary>
         /// <param name="httpStatusCode">HttpStatusCode</param>
-        /// <param name="error">Error</param>
-        private static void LogError(HttpStatusCode httpStatusCode, Error error = null)
+        /// <param name="errorList">IList<Error></Error></param>
+        private static void LogError(HttpStatusCode httpStatusCode, ErrorList errorList = null)
         {
             // Log all error information
-            Log.Warn().WriteLine("Http status code: {0} ({1}). Response from server: {2}", httpStatusCode.ToString(), (int)httpStatusCode, error?.Message ?? httpStatusCode.ToString());
-            if (error?.Context != null)
+            Log.Warn().WriteLine("Http status code: {0} ({1}). Response from server: {2}", httpStatusCode.ToString(), (int)httpStatusCode, errorList?.Errors?.FirstOrDefault()?.Message ?? httpStatusCode.ToString());
+            if (errorList?.Errors != null)
             {
-                Log.Warn().WriteLine("Context {0}", error.Context);
-                return;
-            }
-            if (error?.ExceptionName != null)
-            {
-                Log.Warn().WriteLine("Exception name {0}", error.ExceptionName);
+                foreach (var error in errorList.Errors)
+                {
+                    if (error?.Context != null)
+                    {
+                        Log.Warn().WriteLine("Context {0}", error.Context);
+                    }
+                    if (error?.ExceptionName != null)
+                    {
+                        Log.Warn().WriteLine("Exception name {0}", error.ExceptionName);
+                    }
+                }
             }
         }
 
@@ -37,12 +44,11 @@ namespace Dapplo.Bitbucket.Internal
         ///     Else the real response is returned.
         /// </summary>
         /// <typeparam name="TResponse">Type for the ok content</typeparam>
-        /// <typeparam name="TError">Type for the error content</typeparam>
         /// <param name="expectedHttpStatusCode">optional HttpStatusCode to expect</param>
         /// <param name="response">TResponse</param>
         /// <returns>TResponse</returns>
-        public static TResponse HandleErrors<TResponse, TError>(this HttpResponse<TResponse, TError> response, HttpStatusCode? expectedHttpStatusCode = null)
-            where TResponse : class where TError : Error
+        public static TResponse HandleErrors<TResponse>(this HttpResponse<TResponse, ErrorList> response, HttpStatusCode? expectedHttpStatusCode = null)
+            where TResponse : class
         {
             if (expectedHttpStatusCode.HasValue)
             {
@@ -101,10 +107,9 @@ namespace Dapplo.Bitbucket.Internal
         ///     Helper method for handling errors in the response, if the response doesn't have the expected status code an
         ///     exception is thrown.
         /// </summary>
-        /// <typeparam name="TError">Type for the error</typeparam>
         /// <param name="expectedHttpStatusCode">HttpStatusCode to expect</param>
         /// <param name="response">TResponse</param>
-        public static void HandleStatusCode<TError>(this HttpResponseWithError<TError> response, HttpStatusCode expectedHttpStatusCode = HttpStatusCode.OK) where TError : Error
+        public static void HandleStatusCode(this HttpResponseWithError<ErrorList> response, HttpStatusCode expectedHttpStatusCode = HttpStatusCode.OK)
         {
             if (response.StatusCode == expectedHttpStatusCode)
             {

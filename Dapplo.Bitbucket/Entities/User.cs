@@ -31,31 +31,52 @@ using System.Runtime.Serialization;
 
 namespace Dapplo.Bitbucket.Entities
 {
-	/// <summary>
-	/// User information
-	/// </summary>
-	[DataContract]
-	public class User
-	{
-		[DataMember(Name = "name", EmitDefaultValue = false)]
-		public string Name { get; set; }
+    /// <summary>
+    /// User information
+    /// </summary>
+    [DataContract]
+    public class User
+    {
+        /// <summary>
+        /// User name
+        /// </summary>
+        [DataMember(Name = "name", EmitDefaultValue = false)]
+        public string Name { get; set; }
 
-		[DataMember(Name = "emailAddress", EmitDefaultValue = false)]
-		public string EmailAddress { get; set; }
+        /// <summary>
+        /// Email address of the user
+        /// </summary>
+        [DataMember(Name = "emailAddress", EmitDefaultValue = false)]
+        public string EmailAddress { get; set; }
 
-		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int Id { get; set; }
+        /// <summary>
+        /// User ID
+        /// </summary>
+        [DataMember(Name = "id", EmitDefaultValue = false)]
+        public int Id { get; set; }
 
-		[DataMember(Name = "displayName", EmitDefaultValue = false)]
-		public string DisplayName { get; set; }
+        /// <summary>
+        /// Display name
+        /// </summary>
+        [DataMember(Name = "displayName", EmitDefaultValue = false)]
+        public string DisplayName { get; set; }
 
-		[DataMember(Name = "active", EmitDefaultValue = false)]
-		public bool Active { get; set; }
+        /// <summary>
+        /// Is the user active
+        /// </summary>
+        [DataMember(Name = "active", EmitDefaultValue = false)]
+        public bool Active { get; set; }
 
-		[DataMember(Name = "slug", EmitDefaultValue = false)]
-		public string Slug { get; set; }
+        /// <summary>
+        /// Slug is used when accessing the API an a user needs to be passed
+        /// </summary>
+        [DataMember(Name = "slug", EmitDefaultValue = false)]
+        public string Slug { get; set; }
 
-		[DataMember(Name = "type", EmitDefaultValue = false)]
-		public string Type { get; set; }
-	}
+        /// <summary>
+        /// Type of user
+        /// </summary>
+        [DataMember(Name = "type", EmitDefaultValue = false)]
+        public string Type { get; set; }
+    }
 }

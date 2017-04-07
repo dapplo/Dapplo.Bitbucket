@@ -55,7 +55,7 @@ namespace Dapplo.Bitbucket
             var usersUri = bitbucketClient.BitbucketApiUri.AppendSegments("users");
 
             bitbucketClient.Behaviour.MakeCurrent();
-            var response = await usersUri.GetAsAsync<HttpResponse<Results<User>, Error>>(cancellationToken).ConfigureAwait(false);
+            var response = await usersUri.GetAsAsync<HttpResponse<Results<User>, ErrorList>>(cancellationToken).ConfigureAwait(false);
             return response.HandleErrors();
         }
 
@@ -71,7 +71,7 @@ namespace Dapplo.Bitbucket
             var userUri = bitbucketClient.BitbucketApiUri.AppendSegments("users", userSlug);
 
             bitbucketClient.Behaviour.MakeCurrent();
-            var response = await userUri.GetAsAsync<HttpResponse<User, Error>>(cancellationToken).ConfigureAwait(false);
+            var response = await userUri.GetAsAsync<HttpResponse<User, ErrorList>>(cancellationToken).ConfigureAwait(false);
             return response.HandleErrors();
         }
 

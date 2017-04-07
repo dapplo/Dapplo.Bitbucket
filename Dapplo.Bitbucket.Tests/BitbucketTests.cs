@@ -50,14 +50,14 @@ namespace Dapplo.Bitbucket.Tests
 
         // Specify the URI for the Bitbucket server
         // ReSharper disable once AssignNullToNotNullAttribute
-        private static readonly Uri BitbucketTestUri = new Uri(Environment.GetEnvironmentVariable("bitbucket_test_url"));
+        private static readonly string BitbucketTestUri = Environment.GetEnvironmentVariable("bitbucket_test_url");
 
         private readonly IBitbucketClient _bitbucketClient;
 
         public BitbucketTests(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-            _bitbucketClient = BitbucketClient.Create(BitbucketTestUri);
+            _bitbucketClient = BitbucketClient.Create(new Uri(BitbucketTestUri));
 
             if (!string.IsNullOrEmpty(_username) && !string.IsNullOrEmpty(_password))
             {

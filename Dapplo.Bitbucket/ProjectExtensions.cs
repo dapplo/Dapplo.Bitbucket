@@ -25,7 +25,6 @@
 
 #region Usings
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,7 +32,6 @@ using Dapplo.Bitbucket.Domains;
 using Dapplo.Bitbucket.Entities;
 using Dapplo.Bitbucket.Internal;
 using Dapplo.HttpExtensions;
-using Dapplo.Log;
 
 #endregion
 
@@ -68,7 +66,7 @@ namespace Dapplo.Bitbucket
                 projectsUri = projectsUri.ExtendQuery("limit", pagingInfo.Limit);
             }
             bitbucketClient.Behaviour.MakeCurrent();
-            var response = await projectsUri.GetAsAsync<HttpResponse<Results<Project>, Error>>(cancellationToken).ConfigureAwait(false);
+            var response = await projectsUri.GetAsAsync<HttpResponse<Results<Project>, ErrorList>>(cancellationToken).ConfigureAwait(false);
             return response.HandleErrors();
         }
 

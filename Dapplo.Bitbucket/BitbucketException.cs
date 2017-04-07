@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using Dapplo.Bitbucket.Entities;
 
@@ -19,24 +21,18 @@ namespace Dapplo.Bitbucket
         }
 
         /// <summary>
-        ///  Constructor with a HttpStatus code and an Error object
+        ///  Constructor with a HttpStatus code and a list of Error objects
         /// </summary>
         /// <param name="httpStatusCode">HttpStatusCode</param>
-        /// <param name="error">Error</param>
-        public BitbucketException(HttpStatusCode httpStatusCode, Error error = null) : base(error?.Message ?? $"{httpStatusCode}({(int)httpStatusCode})")
+        /// <param name="errors">IList with Error</param>
+        public BitbucketException(HttpStatusCode httpStatusCode, ErrorList errors = null) : base(errors?.Errors?.FirstOrDefault()?.Message ?? $"{httpStatusCode}({(int)httpStatusCode})")
         {
-            Context = error?.Context;
-            ExceptionName = error?.ExceptionName;
+            Errors = errors;
         }
 
         /// <summary>
-        /// Get the context of the exception
+        /// Get the errors for the exception
         /// </summary>
-        public string Context { get; }
-
-        /// <summary>
-        /// Get the exception name
-        /// </summary>
-        public string ExceptionName { get; }
+        public ErrorList Errors { get; }
     }
 }

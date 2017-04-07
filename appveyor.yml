@@ -18,7 +18,7 @@ before_package:
 #- ps: .\CreateCoverage.ps1
 environment:
   COVERALLS_REPO_TOKEN:
-    secure: 5WWUHMA6N4J56uA5Or7KTn56RYcGHDnTTIxqxGmWyoEpdhkasFIAfeOrFnCLxFPt
+    secure: QZGlO26FXPxhzbeFtexDdxQXlLl5rNH2OCKb3prwdWiAluEWHa7R3NxmwGxn0G7Y
 build:
   publish_nuget: true
   publish_nuget_symbols: true
